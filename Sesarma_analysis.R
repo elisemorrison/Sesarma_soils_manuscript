@@ -23,15 +23,27 @@ bulk<-mutate(bulk, CreekID=case_when(Site == "North" ~ "A",
   mutate(CN=case_when(Location=='Benthic diatoms'~wt..TC/wt..TN, 
                       Location!='Benthic diatoms'~acidified.wt..C/wt..TN), 
          d13C=case_when(Location=='Benthic diatoms'~d13C_not_acidified, 
-                        Location!='Benthic diatoms'~acidified.d13C..permil..vs.VPDB.))
+                        Location!='Benthic diatoms'~acidified.d13C..permil..vs.VPDB.)) %>% 
+  mutate(Category=case_when(SoilType=="Upper Horizon" ~ "USS",
+                            SoilType=="Lower Horizon" ~ "Sediment", 
+                            SoilType=="No Horizon" ~ "Sediment",
+                            SoilType=="Benthic diatoms"~"Benthic diatoms", 
+                            SoilType=="Whole crab"~"Sesarma", 
+                            SoilType=="Soft tissue"~"Sesarma",
+                            SoilType=="Gut" ~ "Sesarma", 
+                            SoilType=="Spartina"~"Spartina",
+                            SoilType=="Visceral mass"~"Mussel", 
+                            SoilType=="Gills"~"Mussel"))
 
 
 
 ################# Analyze USS
 
 USS<-filter(bulk, !is.na(USS.depth.cm)) %>% 
-  select(SampleID, Position, Location, CreekID, Status, Replicate, SoilType, USS.depth.cm) %>% 
-  unique()
+  select(SampleID, Position, Location, CreekID, Status, Replicate, Category, USS.depth.cm, 
+         wt..TN, wt..TC, d15N, d13C, acidified.wt..C, CN) %>% 
+  unique() %>% 
+  rename(Sample=SampleID)
 
 #check variance
 var(USS$USS.depth.cm)
@@ -43,6 +55,7 @@ USS_KW<-kruskal.test(USS.depth.cm~Status, data=USS)
 
 dunn.test(USS$USS.depth.cm, USS$Status)
 
+#summary table (Table S3) for USS
 summary_USS<-USS %>% 
   group_by(Position, Status) %>%
   summarize(depthmean=mean(USS.depth.cm, na.rm=TRUE), 
@@ -50,6 +63,9 @@ summary_USS<-USS %>%
             depthmin=min(USS.depth.cm, na.rm=TRUE), 
             depthmax=max(USS.depth.cm, na.rm=TRUE))
 
+write.csv(summary_USS, "./Tables/TableS3.csv")
+
+#supplementary plot (S1) for USS
 plotA<-ggplot(USS, aes(Position, USS.depth.cm, color=Status))+
   theme_minimal()+
   ylab("USS depth (cm)")+
@@ -80,13 +96,13 @@ plot_grid(plotA, plotB, labels=c("A", "B"), ncol = 1)
 ############### Create summary table for bulk measures
 
 #rather than grouping by soil type, get mean values from all soil types
-table1_allcreeks_aggregated<-select(bulk, SampleID, SoilType, Status, Position, Location, 
-                                    Site, Status, Replicate, USS.depth.cm, d15N, 
-                                    acidified.d13C..permil..vs.VPDB., d13C,
-                                    d13C_not_acidified,
-                                    wt..TN, wt..TC, acidified.wt..C, CN) %>% 
-  group_by(Status, SoilType, Position) %>% 
-  summarize(meanCN=round(mean(CN, na.rm=TRUE), 2), 
+table_allcreeks_aggregated<-select(bulk, SampleID, Category, Status, Position, Location, 
+                                    Site, Replicate, USS.depth.cm, d15N, 
+                                    d13C,wt..TN, wt..TC, acidified.wt..C, CN) %>% 
+  group_by(Status, Category, Position) %>% 
+  summarize(meanUSSDepth=round(mean(USS.depth.cm, na.rm=TRUE), 1), 
+            sdUSSDepth=round(sd(USS.depth.cm, na.rm=TRUE), 1),
+            meanCN=round(mean(CN, na.rm=TRUE), 2), 
             sdCN=round(sd(CN, na.rm=TRUE), 2),
             mean15N=round(mean(d15N, na.rm=TRUE), 2), 
             sd15N=round(sd(d15N, na.rm=TRUE), 2), 
@@ -100,7 +116,57 @@ table1_allcreeks_aggregated<-select(bulk, SampleID, SoilType, Status, Position, 
             sdTOC=round(sd(acidified.wt..C, na.rm=TRUE), 2), 
             n=n()) 
 
-write.csv(table1_allcreeks_aggregated, "./Tables/TableS1.csv")
+write.csv(table_allcreeks_aggregated, "./Tables/TableS_bulk.csv")
+
+############### Random effects model for sediments
+
+#subset for sediments first
+sediment<-filter(bulk, Category=="Sediment")
+
+TOC_sediment_lmer<-lmerTest::lmer(acidified.wt..C~Status+(1|Position), data=sediment)
+anova(TOC_sediment_lmer)
+
+#test for TN
+TN_sediment_lmer<-lmerTest::lmer(wt..TN~Status+(1|Position), data=sediment)
+anova(TN_sediment_lmer)
+
+#test for TC
+TC_sediment_lmer<-lmerTest::lmer(wt..TC~Status+(1|Position), data=sediment)
+anova(TC_sediment_lmer)
+
+#test for C:N
+CN_sediment_lmer<-lmerTest::lmer(CN~Status+(1|Position), data=sediment)
+anova(CN_sediment_lmer)
+
+#test for d13C
+d13C_sediment_lmer<-lmerTest::lmer(acidified.d13C..permil..vs.VPDB.~Status+(1|Position), data=sediment)
+anova(d13C_sediment_lmer)
+
+#test for d15N
+d15N_sediment_lmer<-lmerTest::lmer(d15N~Status+(1|Position), data=sediment)
+anova(d15N_sediment_lmer)
+
+#sediment aggregated across zones
+table_nozones<-select(sediment, SampleID, Category, Status, Position, Location, 
+                                   Site, Replicate, USS.depth.cm, d15N, 
+                                   d13C,wt..TN, wt..TC, acidified.wt..C, CN) %>% 
+  group_by(Status) %>% 
+  summarize(meanUSSDepth=round(mean(USS.depth.cm, na.rm=TRUE), 1), 
+            sdUSSDepth=round(sd(USS.depth.cm, na.rm=TRUE), 1),
+            meanCN=round(mean(CN, na.rm=TRUE), 2), 
+            sdCN=round(sd(CN, na.rm=TRUE), 2),
+            mean15N=round(mean(d15N, na.rm=TRUE), 2), 
+            sd15N=round(sd(d15N, na.rm=TRUE), 2), 
+            meanTC=round(mean(wt..TC, na.rm=TRUE), 2), 
+            sdTC=round(sd(wt..TC, na.rm=TRUE), 2), 
+            meanTN=round(mean(wt..TN, na.rm=TRUE), 2), 
+            sdTN=round(sd(wt..TN, na.rm=TRUE), 2), 
+            mean13C=round(mean(d13C, na.rm=TRUE), 2), 
+            sd13C=round(sd(d13C, na.rm=TRUE), 2), 
+            meanTOC=round(mean(acidified.wt..C, na.rm=TRUE), 2), 
+            sdTOC=round(sd(acidified.wt..C, na.rm=TRUE), 2), 
+            n=n()) 
+
 
 ############### Test for significant differences between fore- and hind-guts
 
@@ -157,3 +223,10 @@ Ciso<-mean.d13C %>%
          pc=numerator/denom)
 
 ## % Carbon contributed by Spartina 90.8%
+
+
+############### Amino acid analyses
+###############
+
+
+
