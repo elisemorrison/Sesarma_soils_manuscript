@@ -199,10 +199,179 @@ wilcox.test(d15N~Position, data=guts)
 var.test(CN~Position, data=guts) #ratio of variances=0.05375183 p-value = 1.503e-06
 wilcox.test(CN~Position, data=guts) #W = 0, p-value = 2.947e-08
 
-############### Plot Figure 3
+############### Plot figures for sediments and endmembers
+
+## take out mussel samples
+renamed_for_plots<-filter(bulk, Category!="Mussel")
+
+#update order that Biodeposit and Type will plot
+renamed_for_plots$Position<-gsub("Benthic diatoms", "", renamed_for_plots$Position) #workaround to not have duplicate labels
+renamed_for_plots$Position<-gsub("Spartina", "", renamed_for_plots$Position) 
+renamed_for_plots$Status<-ordered(renamed_for_plots$Status, c("Grazed", "Un-grazed", "Benthic diatoms", "Whole crab", "Soft tissue", "Fore-gut", 
+                                                          "Hind-gut", "Spartina"))
+renamed_for_plots$Category<-ordered(renamed_for_plots$Category, c("USS", "Sediment", "Sesarma", "Spartina", "Benthic diatoms"))
+
+# ## first want to create legend for shared "bulk data" plot...just need a temp plot to extract legend from
+temp_plot<-ggplot(renamed_for_plots, aes(Position, d15N, fill=Category))+
+  geom_boxplot(position="dodge", color="black")+ 
+  theme_minimal()+
+  scale_fill_npg()+
+  scale_color_npg()+
+  guides(fill=guide_legend(title="Sample Type"))+
+  ggtitle(expression(paste(delta,""^15,"N ")))+
+  theme(strip.text.x = element_text())+
+  panel_border(color="black")+
+  theme(legend.position = "bottom")+
+  guides(fill=guide_legend(nrow=1,byrow=TRUE))+
+  theme(text = element_text(size = 20))
+
+bulk_legend<-get_legend(temp_plot)
 
 
-############### Evaluate differences between grazed and ungrazed sediments
+CN_all<-ggplot(renamed_for_plots, aes(Position, CN, fill=Category))+
+  geom_boxplot(position=position_dodge(preserve="single"), color="black")+ 
+  theme_minimal()+
+  scale_fill_npg()+
+  scale_color_npg()+
+  ylab("C:N")+
+  xlab("")+ #only have x label for bottom plot; d13C will be bottom plot
+  theme(text = element_text(size = 20))+
+  theme(axis.text.x = element_blank())+
+  panel_border(color="black")+
+  facet_wrap(.~Category, scales="free_x", nrow=1)+ 
+  theme(legend.position = "none") #have no legend so bulk legend can be added to full bulk plot
+ 
+
+CN_all
+
+
+d15N_all<-ggplot(renamed_for_plots, aes(Position, d15N, fill=Category))+
+  geom_boxplot(position=position_dodge(preserve="single"), color="black")+ 
+  theme_minimal()+
+  scale_fill_npg()+
+  scale_color_npg()+
+  ylab(expression(paste(delta,""^15,"N (‰)")))+
+  xlab("")+
+  theme(text = element_text(size = 20))+
+  panel_border(color="black")+
+  facet_wrap(.~Category, scales="free_x", nrow=1)+ 
+  theme(legend.position = "none")+
+  theme(axis.text.x = element_blank())
+
+d15N_all
+
+TC_all<-ggplot(renamed_for_plots, aes(Position, wt..TC, fill=Category))+
+  geom_boxplot(position=position_dodge(preserve="single"), color="black")+ 
+  theme_minimal()+
+  scale_fill_npg()+
+  scale_color_npg()+
+  ylab("Total Carbon (%)")+
+  xlab("")+
+  theme(text = element_text(size = 20))+
+  panel_border(color="black")+
+  facet_wrap(.~Category, scales="free", nrow=1)+ 
+  theme(legend.position = "none")+ 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size=8))
+
+TC_all
+
+TN_all<-ggplot(renamed_for_plots, aes(Position, wt..TN, fill=Category))+
+  geom_boxplot(position=position_dodge(preserve="single"), color="black")+
+  theme_minimal()+
+  scale_fill_npg()+
+  scale_color_npg()+
+  ylab("Total Nitrogen (%)")+
+  xlab("")+
+  theme(text = element_text(size = 20))+
+  panel_border(color="black")+
+  facet_wrap(.~Category, scales="free", nrow=1)+ 
+  theme(legend.position = "none")+ 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size=8))
+
+TN_all
+
+d13C_all<-ggplot(renamed_for_plots, aes(Position, d13C, fill=Category))+
+  geom_boxplot(position=position_dodge(preserve="single"), color="black")+ 
+  theme_minimal()+
+  scale_fill_npg()+
+  scale_color_npg()+
+  ylab(expression(paste(delta,""^13,"C (‰)")))+
+  xlab("")+
+  theme(text = element_text(size = 20))+
+  panel_border(color="black")+
+  facet_grid(.~Category, scales="free_x")+ 
+  theme(legend.position = "none")+ 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+d13C_all
+
+### plot all bulk measures together
+### plot one with stable isotopes, another with C, N, C:N
+
+plot_grid(TC_all, TN_all, CN_all, bulk_legend, ncol=1, 
+          rel_heights = c(1,1,1.1,0.1))
+
+
+# plot one with stable isotopes, another with C, N, C:N
+plot_grid(CN_all, d15N_all, d13C_all, bulk_legend,  ncol=1, 
+          rel_heights = c(1,1,1.3,0.1), labels=c("A", "B", "C", ""))
+
+############### Plot C and N isotopes
+
+isoplot_data<-renamed_for_plots %>% 
+  mutate(Status=case_when(Position=="Fore-gut" ~ "Fore-gut", 
+                   Position=="Hind-gut" ~ "Hind-gut",
+                   Position=="Whole crab" ~ "Whole crab",
+                   Position=="Soft tissue" ~ "Soft tissue",
+                   Status=="Grazed" ~ "Grazed", 
+                   Status=="Un-grazed" ~ "Un-grazed",
+                   Status=="Spartina" ~ "Spartina",
+                   Status=="Benthic diatoms" ~ "Benthic diatoms"
+                   )) %>% 
+  group_by(Category, Status) %>% 
+  mutate(meand15N=mean(d15N, na.rm=TRUE), 
+         meand13C=mean(d13C, na.rm=TRUE), 
+         sd15N=sd(d15N, na.rm=TRUE), 
+         sd13C=sd(d13C, na.rm=TRUE)) %>% 
+  select(Status, Category, d13C, d15N, sd15N, sd13C, meand13C, meand15N) %>% 
+  unique() %>% 
+  rename(`Sample Type`=Category, Description=Status)
+
+#reorder so it plots more intuitively
+isoplot_data$Description <-ordered(isoplot_data$Description, c("Grazed", "Un-grazed", "Benthic diatoms", "Whole crab", "Soft tissue", "Fore-gut", 
+                                                              "Hind-gut", "Spartina"))
+
+## get the legend
+isoplot_legend<-get_legend(ggplot(isoplot_data)+
+                             geom_point(aes(d13C, d15N, fill=Description, color=Description), alpha=0.5, size=1)+
+                             geom_errorbar(aes(x=meand13C, ymin=meand15N-sd15N, ymax=meand15N+sd15N, color=Description), size=0.5)+
+                             geom_errorbarh(aes(y=meand15N, xmin=meand13C-sd13C, xmax=meand13C+sd13C, color=Description), size=0.5)+
+                             geom_point(aes(meand13C, meand15N, fill=Description, color=Description, shape=`Sample Type`), size=3)+ #keep this line for now, for plotting the legend
+                             theme_minimal()+
+                             scale_fill_npg()+
+                             scale_color_npg()+
+                             scale_shape_manual(values=c(21, 22, 23, 24, 25, 12))+
+                             theme(text = element_text(size = 15)))
+
+## now save actual plot, with black outlines around mean values (if we kept the legend, it doesn't plot the colors clearly)
+isoplot<-ggplot(isoplot_data)+
+  geom_point(aes(d13C, d15N, fill=Description, color=Description, shape=`Sample Type`), alpha=0.5, size=3)+
+  geom_errorbar(aes(x=meand13C, ymin=meand15N-sd15N, ymax=meand15N+sd15N, color=Description), size=0.5)+
+  geom_errorbarh(aes(y=meand15N, xmin=meand13C-sd13C, xmax=meand13C+sd13C, color=Description), size=0.5)+
+  geom_point(aes(meand13C, meand15N, fill=Description, shape=`Sample Type`), color="black",size=5)+ #keep this line for now, for plotting the legend
+  theme_minimal()+
+  scale_fill_npg()+
+  scale_color_npg()+
+  scale_shape_manual(values=c(21, 22, 23, 24, 25, 12))+
+  theme(legend.position="none")+
+  ylab(expression(paste(delta,""^15,"N (‰)")))+
+  xlab(expression(paste(delta,""^13,"C (‰)")))+
+  panel_border(color = "grey85", size = 1, linetype = 1)+
+  theme(text = element_text(size = 20))
+
+### final isotope plot
+plot_grid(isoplot, isoplot_legend, rel_widths = c(1, 0.25))
+
 
 ############### Use a simple two-endmember mixing model (Middelburg, 2014)
 ############### to evaluate the proportion of C from spartina (Resource A)
