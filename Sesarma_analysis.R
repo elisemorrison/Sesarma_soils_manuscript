@@ -324,8 +324,10 @@ plot_grid(TC_all, TN_all, CN_all, bulk_legend, ncol=1,
 
 
 # plot one with stable isotopes, another with C, N, C:N
-plot_grid(CN_all, d15N_all, d13C_all, bulk_legend,  ncol=1, 
+plot_grid(CN_all, d15N_all, d13C_all, ncol=1, 
           rel_heights = c(1,1,1.3,0.2), labels=c("(a)", "(b)", "(c)", ""))
+
+
 
 ############### Plot C and N isotopes
 
