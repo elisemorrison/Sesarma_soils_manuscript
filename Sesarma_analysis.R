@@ -116,7 +116,53 @@ table_allcreeks_aggregated<-select(bulk, SampleID, Category, Status, Position, L
             sdTOC=round(sd(acidified.wt..C, na.rm=TRUE), 2), 
             n=n()) 
 
-write.csv(table_allcreeks_aggregated, "./Tables/TableS_bulk.csv")
+write.csv(table_allcreeks_aggregated, "./Tables/TableS_bulk_creeksAggregated.csv")
+
+#get endmember supplementary table, need to make sex/sample codes more reader-friendly
+endmembers<-filter(bulk, Status!="Grazed"&Status!="Un-grazed") %>% 
+  filter(Location!="Mussel") %>%  #remove Sydney's mussel data
+  select(SoilType, Location, Position, Status, CN, wt..TC, acidified.wt..C, wt..TN, d13C, d15N) %>% 
+  mutate(Other=case_when(Location=="LM"~"Large male", 
+                         Location=="LG"~"Large gravid", 
+                         Location=="MM"~"Medium male", 
+                         Location=="MG"~"Medium gravid", 
+                         Location=="MF"~"Medium female",
+                         Location=="SM"~"Small male", 
+                         Location=="SG"~"Small gravid", 
+                         Location=="SF"~"Small female", 
+                         Status=="acid rinsed" ~"acid rinsed", 
+                         Status=="non-acid rinsed" ~"non-acid rinsed", 
+  )) %>% 
+  select(SoilType, Position, Other, CN, wt..TC, acidified.wt..C, wt..TN, d13C, d15N)
+
+table_endmember<-select(endmembers, SampleID, SoilType, Position, Other, d15N, 
+                                   d13C,wt..TN, wt..TC, acidified.wt..C, CN) %>% 
+  group_by(SoilType, Position, Other) %>% 
+  summarize(meanCN=round(mean(CN, na.rm=TRUE), 2), 
+            sdCN=round(sd(CN, na.rm=TRUE), 2),
+            mean15N=round(mean(d15N, na.rm=TRUE), 2), 
+            sd15N=round(sd(d15N, na.rm=TRUE), 2), 
+            meanTC=round(mean(wt..TC, na.rm=TRUE), 2), 
+            sdTC=round(sd(wt..TC, na.rm=TRUE), 2), 
+            meanTN=round(mean(wt..TN, na.rm=TRUE), 2), 
+            sdTN=round(sd(wt..TN, na.rm=TRUE), 2), 
+            mean13C=round(mean(d13C, na.rm=TRUE), 2), 
+            sd13C=round(sd(d13C, na.rm=TRUE), 2), 
+            meanTOC=round(mean(acidified.wt..C, na.rm=TRUE), 2), 
+            sdTOC=round(sd(acidified.wt..C, na.rm=TRUE), 2), 
+            n=n()) 
+
+endmember_formatted<-mutate(table_endmember,
+                             CN=paste0(meanCN, " (", sdCN, ")"),
+                             TC=paste0(meanTC, " (", sdTC, ")"), 
+                             TOC=paste0(meanTOC, " (", sdTOC, ")"), 
+                             TN=paste0(meanTN, " (", sdTN, ")"), 
+                             d13C=paste0(mean13C, " (", sd13C, ")"), 
+                             d15N=paste0(mean15N, " (", sd15N, ")")
+) %>% 
+  select(SoilType, Position, Other, CN, TC, TOC, TN, d13C, d15N, n)
+
+write.csv(endmember_formatted, "./Tables/TableS_bulk_endmember.csv")
 
 ############### Random effects model for sediments
 
