@@ -31,9 +31,7 @@ bulk<-mutate(bulk, CreekID=case_when(Site == "North" ~ "A",
                             SoilType=="Whole crab"~"Sesarma", 
                             SoilType=="Soft tissue"~"Sesarma",
                             SoilType=="Gut" ~ "Sesarma", 
-                            SoilType=="Spartina"~"Spartina",
-                            SoilType=="Visceral mass"~"Mussel", 
-                            SoilType=="Gills"~"Mussel"))
+                            SoilType=="Spartina"~"Spartina"))
 
 
 
@@ -120,7 +118,6 @@ write.csv(table_allcreeks_aggregated, "./Tables/TableS_bulk_creeksAggregated.csv
 
 #get endmember supplementary table, need to make sex/sample codes more reader-friendly
 endmembers<-filter(bulk, Status!="Grazed"&Status!="Un-grazed") %>% 
-  filter(Location!="Mussel") %>%  #remove Sydney's mussel data
   select(SoilType, Location, Position, Status, CN, wt..TC, acidified.wt..C, wt..TN, d13C, d15N) %>% 
   mutate(Other=case_when(Location=="LM"~"Large male", 
                          Location=="LG"~"Large gravid", 
@@ -247,8 +244,8 @@ wilcox.test(CN~Position, data=guts) #W = 0, p-value = 2.947e-08
 
 ############### Plot figures for sediments and endmembers
 
-## take out mussel samples
-renamed_for_plots<-filter(bulk, Category!="Mussel") %>% 
+## Give a color code to sample types
+renamed_for_plots<-bulk %>% 
   mutate(ColorCode=case_when(Position=="Fore-gut" ~ "Fore-gut", 
                                              Position=="Hind-gut" ~ "Hind-gut",
                                              Position=="Whole crab" ~ "Whole crab",

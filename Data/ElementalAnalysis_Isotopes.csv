@@ -1,17 +1,8 @@
 SampleID,Location,Site,Status,Position,Replicate,SoilType,USS.depth.cm,d15N,d13C_not_acidified,wt %TN,wt %TC,"acidified d13C (permil, vs VPDB)",acidified wt %N,acidified wt %C
-0 m Gills A,Mussel,Gills,Gills,Gills,Gills,Gills,NA,8.64,,9.54,38.14,-18.66277374,,34.68
-0 m Gills B,Mussel,Gills,Gills,Gills,Gills,Gills,NA,8.55,,10.27,39.9,-18.55937381,,36.49
-0 m Gills C,Mussel,Gills,Gills,Gills,Gills,Gills,NA,8.73,,9.45,38.23,-18.51180984,,34.89
-0 m v mass A,Mussel,Visceral mass,Visceral mass,Visceral mass,Visceral mass,Visceral mass,NA,6.45,,8.87,43.07,-20.10520283,,40.06
-0 m v mass B,Mussel,Visceral mass,Visceral mass,Visceral mass,Visceral mass,Visceral mass,NA,6.52,,8.75,42.43,-20.08142085,,40.64
-0 m v mass C,Mussel,Visceral mass,Visceral mass,Visceral mass,Visceral mass,Visceral mass,NA,6.45,,9.18,44.97,-19.96768092,,35.93
 0m off DI rinsed Spartina A,Spartina,Spartina,Spartina,Spartina,Spartina,Spartina,NA,,,,,-14.09456462,,39.28
 0m off DI rinsed Spartina B,Spartina,Spartina,Spartina,Spartina,Spartina,Spartina,NA,,,,,-14.03872866,,39.22
 0m on DI rinsed Spartina A,Spartina,Spartina,Spartina,Spartina,Spartina,Spartina,NA,,,,,-13.8122828,,37.83
 0m on DI rinsed Spartina B,Spartina,Spartina,Spartina,Spartina,Spartina,Spartina,NA,,,,,-13.75644684,,38.14
-10 m Gills A,Mussel,Gills,Gills,Gills,Gills,Gills,NA,8.46,,9.33,35.78,-18.12716208,,34.04
-10 m Gills B,Mussel,Gills,Gills,Gills,Gills,Gills,NA,8.4,,9.26,35.49,-18.46941586,,30.27
-10 m Gills C,Mussel,Gills,Gills,Gills,Gills,Gills,NA,8.43,,9.14,35.09,-18.47768786,,34.18
 10 m off Spartina A,Spartina,Spartina,Spartina,Spartina,Spartina,Spartina,NA,3.92,,1.65,42.18,-14.07388464,,34.86
 10 m off Spartina B,Spartina,Spartina,Spartina,Spartina,Spartina,Spartina,NA,3.81,,1.57,43.1,-13.9766887,,36.27
 10 m off Spartina C,Spartina,Spartina,Spartina,Spartina,Spartina,Spartina,NA,3.71,,1.61,41.35,-14.48748438,,41.19
@@ -20,11 +11,6 @@ SampleID,Location,Site,Status,Position,Replicate,SoilType,USS.depth.cm,d15N,d13C
 10 m v mass C,Mussel,Visceral mass,Visceral mass,Visceral mass,Visceral mass,Visceral mass,NA,6.63,,9.28,44.43,-19.41035527,,39.5
 10m on DI rinsed Spartina A,Spartina,Spartina,Spartina,Spartina,Spartina,Spartina,NA,,,,,-13.05849728,,41.11
 10m on DI rinsed Spartina B,Spartina,Spartina,Spartina,Spartina,Spartina,Spartina,NA,,,,,-13.04919128,,40.93
-20 m Gills A,Mussel,Gills,Gills,Gills,Gills,Gills,NA,8.71,,9.98,37.71,-18.22332402,,35.04
-20 m Gills B,Mussel,Gills,Gills,Gills,Gills,Gills,NA,8.69,,9.41,35.71,-18.27709199,,36.02
-20 m Gills C,Mussel,Gills,Gills,Gills,Gills,Gills,NA,8.65,,9.82,37.2,-18.37325392,,35.11
-20 m v mass A,Mussel,Visceral mass,Visceral mass,Visceral mass,Visceral mass,Visceral mass,NA,6.69,,8.53,40.03,-19.79810503,,39.39
-20 m v mass B,Mussel,Visceral mass,Visceral mass,Visceral mass,Visceral mass,Visceral mass,NA,6.61,,8.84,41.65,-19.72882707,,37.68
 20m off DI rinsed Spartina A,Spartina,Spartina,Spartina,Spartina,Spartina,Spartina,NA,,,,,-14.07698664,,39.02
 20m off DI rinsed Spartina B,Spartina,Spartina,Spartina,Spartina,Spartina,Spartina,NA,,,,,-14.14419659,,39.4
 20m on DI rinsed Spartina A,Spartina,Spartina,Spartina,Spartina,Spartina,Spartina,NA,,,,,-13.55481697,,39.76
@@ -313,12 +299,6 @@ Prince 72,Sesarma,Soft tissue,Soft tissue,Soft tissue,Soft tissue,Soft tissue,NA
 Prince 75,Sesarma,Soft tissue,Soft tissue,Soft tissue,Soft tissue,Soft tissue,NA,7.231877505,,10.88,37.38,-14.59237276,,
 Prince 85,Sesarma,Soft tissue,Soft tissue,Soft tissue,Soft tissue,Soft tissue,NA,7.713805613,,10.22,35.29,-14.21996531,,
 Ridge DI rinsed Spartina A,Spartina,Spartina,Spartina,Spartina,Spartina,Spartina,NA,,,,,-13.26322915,,39.77
-Ridge Gills A,Mussel,Gills,Gills,Gills,Gills,Gills,NA,8.46,,9.65,37.53,-18.40220591,,35.18
-Ridge Gills B,Mussel,Gills,Gills,Gills,Gills,Gills,NA,8.4,,9.75,37.97,-18.49009585,,35.31
-Ridge Gills C,Mussel,Gills,Gills,Gills,Gills,Gills,NA,8.39,,9.68,37.49,-18.49940184,,35.01
-Ridge v mass A,Mussel,Visceral mass,Visceral mass,Visceral mass,Visceral mass,Visceral mass,NA,6.94,,8.88,40.41,-19.37209729,,37.9
-Ridge v mass B,Mussel,Visceral mass,Visceral mass,Visceral mass,Visceral mass,Visceral mass,NA,6.94,,9.29,42.14,-18.8809476,,36.87
-Ridge v mass C,Mussel,Visceral mass,Visceral mass,Visceral mass,Visceral mass,Visceral mass,NA,7.04,,8.9,40.25,-19.43620525,,37.54
 Sample 1,Benthic diatoms,Benthic diatoms,Benthic diatoms,Benthic diatoms,Benthic diatoms,Benthic diatoms,NA,3.104925855,-17.16921416,0.36,4.32,NA,NA,NA
 Sample 10,Benthic diatoms,Benthic diatoms,Benthic diatoms,Benthic diatoms,Benthic diatoms,Benthic diatoms,NA,2.981754149,-20.17531423,0.21,2.53,NA,NA,NA
 Sample 2,Benthic diatoms,Benthic diatoms,Benthic diatoms,Benthic diatoms,Benthic diatoms,Benthic diatoms,NA,2.467865637,-19.71737753,0.76,9.1,NA,NA,NA
