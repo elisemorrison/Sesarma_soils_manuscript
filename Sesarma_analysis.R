@@ -295,7 +295,9 @@ CN_all<-ggplot(renamed_for_plots, aes(Position, CN, fill=ColorCode))+
   ylab("C:N")+
   xlab("")+ #only have x label for bottom plot; d13C will be bottom plot
   theme(text = element_text(size = 20))+
-  theme(axis.text.x = element_blank())+
+  theme(axis.text.x = element_blank(), 
+        axis.ticks=element_line(linewidth=1), 
+        axis.ticks.length=unit(0.25, "cm"))+
   panel_border(color="black")+
   facet_wrap(.~Category, scales="free_x", nrow=1)+ 
   theme(legend.position = "none") #have no legend so bulk legend can be added to full bulk plot
@@ -310,6 +312,8 @@ d15N_all<-ggplot(renamed_for_plots, aes(Position, d15N, fill=ColorCode))+
   ylab(expression(paste(delta,""^15,"N (‰)")))+
   xlab("")+
   theme(text = element_text(size = 20))+
+  theme(axis.ticks=element_line(linewidth=1), 
+        axis.ticks.length=unit(0.25, "cm"))+
   panel_border(color="black")+
   facet_wrap(.~Category, scales="free_x", nrow=1)+ 
   theme(legend.position = "none")+
@@ -324,6 +328,8 @@ TC_all<-ggplot(renamed_for_plots, aes(Position, wt..TC, fill=ColorCode))+
   ylab("Total Carbon (%)")+
   xlab("")+
   theme(text = element_text(size = 20))+
+  theme(axis.ticks=element_line(linewidth=1), 
+        axis.ticks.length=unit(0.25, "cm"))+
   panel_border(color="black")+
   facet_wrap(.~Category, scales="free", nrow=1)+ 
   theme(legend.position = "none")+ 
@@ -352,6 +358,8 @@ d13C_all<-ggplot(renamed_for_plots, aes(Position, d13C, fill=ColorCode))+
   ylab(expression(paste(delta,""^13,"C (‰)")))+
   xlab("")+
   theme(text = element_text(size = 20))+
+  theme(axis.ticks=element_line(linewidth=1), 
+        axis.ticks.length=unit(0.25, "cm"))+
   panel_border(color="black")+
   facet_grid(.~Category, scales="free_x")+ 
   theme(legend.position = "none")+ 
@@ -426,7 +434,10 @@ isoplot<-ggplot(isoplot_data)+
   ylab(expression(paste(delta,""^15,"N (‰)")))+
   xlab(expression(paste(delta,""^13,"C (‰)")))+
   panel_border(color = "grey85", size = 1, linetype = 1)+
-  theme(text = element_text(size = 20))
+  theme(text = element_text(size = 20))+
+  theme(axis.ticks=element_line(linewidth=1), 
+        axis.ticks.length=unit(0.25, "cm"))+
+  panel_border(color="black")
 
 ### final isotope plot
 plot_grid(isoplot, isoplot_legend, rel_widths = c(1, 0.25))
@@ -670,4 +681,7 @@ ggplot(renamed_fortotalAA_plot, aes(Biodeposit, umgc, fill=Type))+
   theme(strip.text.x = element_text(size = 10))+
   panel_border(color="black")+
   theme(legend.position="bottom")+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  theme(axis.ticks=element_line(linewidth=1), 
+        axis.ticks.length=unit(0.25, "cm"))
+  
